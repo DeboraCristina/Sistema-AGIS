@@ -15,8 +15,9 @@
     </div>
     <main>
       <h1>Área do Professor</h1>
-      <p>ainda não implementada</p>
-      <!-- TODO: Área da Secretaria -->
+      <div>
+        <a class="btn" href="consultar_chamada">Chamadas</a>
+      </div>
     </main>
   </body>
 </html>
