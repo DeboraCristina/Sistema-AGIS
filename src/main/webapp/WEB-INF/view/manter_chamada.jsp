@@ -15,6 +15,24 @@
     <main>
         <h1>Manter Chamada</h1>
         <form action="manter_chamada" method="post" >
+            <div>
+                <table>
+                    <thead>
+                        <th>Aluno</th>
+                        <th>14:50</th>
+                        <th>16:00</th>
+                        <th>17:00</th>
+                        <th>18:00</th>
+                    </thead>
+                    <tbody>
+<%--                        TODO: função java--%>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <a class="btn" href="consultar_chamada">Voltar</a>
+                <a class="btn" href="consultar_chamada">Atualizar/Adicionar Chamada</a>
+            </div>
 
         </form>
     </main>

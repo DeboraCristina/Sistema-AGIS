@@ -15,6 +15,40 @@
     <main>
         <h1>Chamadas</h1>
         <form action="consultar_chamada" method="post">
+        <div>
+            <label for="cursos">Curso:</label>
+            <select name="cursos" id="cursos">
+                <option value="ADS">ADS</option>
+                <option value="COMEX">COMEX</option>
+<%--                TODO: função com java--%>
+            </select>
+            <label for="disciplinas">Disciplina:</label>
+            <select name="disciplinas" id="disciplinas">
+                <option value="Banco de dados">Banco de Dados</option>
+                <option value="seila">seila</option>
+                //TODO: função com java
+            </select>
+        </div>
+        <div class="tabela_container">
+            <table>
+                <thead>
+                    <th>Data</th>
+                    <th>Semestre</th>
+                    <th>Ação</th>
+                </thead>
+                <tbody>
+<%--                    <c:if test="${not empty listaChamadas}">--%>
+<%--                        <c:forEach var="chamada" items="${listaChamadas}">--%>
+<%--                            //TODO função em java--%>
+<%--                        </c:forEach>--%>
+<%--                    </c:if>--%>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <a class="btn" href="area_professor">Voltar</a>
+            <a class="btn" href="manter_chamada">Adicionar Chamada</a>
+        </div>
 
         </form>
     </main>
