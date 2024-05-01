@@ -11,10 +11,13 @@ DROP DATABASE Avaliacao_2_Lab_BD
 */
 
 /*
+DROP TABLE presenca; GO
+DROP TABLE nota; GO
 DROP TABLE conteudo; GO
 DROP TABLE curso_disciplina; GO
 DROP TABLE matricula_disciplina; GO
 DROP TABLE disciplina; GO
+DROP TABLE professor; GO
 DROP TABLE horario; GO
 DROP TABLE matricula; GO
 DROP TABLE telefone; GO
@@ -45,14 +48,24 @@ CREATE TABLE telefone
     FOREIGN KEY (cpf_aluno) REFERENCES aluno
 )
 
+CREATE TABLE professor
+(
+    id      INT NOT NULL,
+    nome    VARCHAR(50) NOT NULL,
+
+    PRIMARY KEY (id)
+)
+
 CREATE TABLE disciplina
 (
-    codigo INT IDENTITY(1001, 1) NOT NULL,
+    codigo INT NOT NULL,
     nome VARCHAR(40) NOT NULL UNIQUE,
     horas_semanais INT NOT NULL,
     periodo_recomendado INT NOT NULL,
+    id_professor    INT NOT NULL,
 
-    PRIMARY KEY(codigo)
+    PRIMARY KEY(codigo),
+    FOREIGN KEY (id_professor) REFERENCES professor
 )
 
 
@@ -137,4 +150,31 @@ CREATE TABLE matricula_disciplina
     FOREIGN KEY(ra_matricula)   REFERENCES matricula,
     FOREIGN KEY(id_horario)     REFERENCES horario,
     FOREIGN KEY(cod_disciplina) REFERENCES disciplina
+)
+
+CREATE TABLE nota
+(
+    id_matricula_disc INT NOT NULL,
+    nota_1 DECIMAL(3, 2) NOT NULL,
+    nota_2 DECIMAL(3, 2) NOT NULL,
+    nota_3 DECIMAL(3, 2) NOT NULL,
+
+    PRIMARY KEY (id_matricula_disc),
+    FOREIGN KEY (id_matricula_disc) REFERENCES matricula_disciplina
+)
+
+CREATE TABLE presenca
+(
+    id INT NOT NULL,
+    id_matricula_disc INT NOT NULL,
+    id_conteudo INT NOT NULL,
+    aula_1 BIT NOT NULL,
+    aula_2 BIT NOT NULL,
+    aula_3 BIT,
+    aula_4 BIT,
+    data DATE,
+
+    PRIMARY KEY (id),
+    FOREIGN KEY (id_matricula_disc) REFERENCES matricula_disciplina
+    FOREIGN KEY (id_conteudo) REFERENCES conteudo
 )
