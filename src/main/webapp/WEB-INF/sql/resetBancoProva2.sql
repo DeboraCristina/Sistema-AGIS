@@ -1374,6 +1374,3 @@ values
     (1, 6.2, 8.0, 7.2),
     (2, 8.0, 8.0, 8.0),
     (3, 9.0, 9.0, 9.0);
-go
-insert into presenca (id_matricula_disc, id_conteudo, aula_1, aula_2, aula_3, aula_4, data)
-values (1, 1, 1, 1, 1, 0, '2024/03/15');

@@ -112,14 +112,58 @@
                                 <tr>
                                     <td><c:out value="${c.nome_aluno}" /></td>
                                     <c:if test="${chamada.get(0).num_aulas > 2}" >
-                                        <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" checked></th>
-                                        <th><input id="presenca2${c.id_matricula_disciplina}" type="checkbox" name="presenca2${c.id_matricula_disciplina}" value="presenca" checked></th>
-                                        <th><input id="presenca3${c.id_matricula_disciplina}" type="checkbox" name="presenca3${c.id_matricula_disciplina}" value="presenca" checked></th>
-                                        <th><input id="presenca4${c.id_matricula_disciplina}" type="checkbox" name="presenca4${c.id_matricula_disciplina}" value="presenca" checked></th>
+                                        <c:if test="${c.presenca1 != null || c.presenca2 != null || c.presenca3 != null || c.presenca4 != null}" >
+                                            <c:if test="${c.presenca1 == 0}" >
+                                                <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" ></th>
+                                            </c:if>
+                                            <c:if test="${c.presenca1 == 1}" >
+                                                <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" checked ></th>
+                                            </c:if>
+                                            <c:if test="${c.presenca2 == 0}" >
+                                                <th><input id="presenca2${c.id_matricula_disciplina}" type="checkbox" name="presenca2${c.id_matricula_disciplina}" value="presenca" ></th>
+                                            </c:if>
+                                            <c:if test="${c.presenca2 == 1}" >
+                                                <th><input id="presenca2${c.id_matricula_disciplina}" type="checkbox" name="presenca2${c.id_matricula_disciplina}" value="presenca" checked ></th>
+                                            </c:if>
+                                            <c:if test="${c.presenca3 == 0}" >
+                                                <th><input id="presenca3${c.id_matricula_disciplina}" type="checkbox" name="presenca3${c.id_matricula_disciplina}" value="presenca" ></th>
+                                            </c:if>
+                                            <c:if test="${c.presenca3 == 1}" >
+                                                <th><input id="presenca3${c.id_matricula_disciplina}" type="checkbox" name="presenca3${c.id_matricula_disciplina}" value="presenca" checked ></th>
+                                            </c:if>
+                                            <c:if test="${c.presenca4 == 0}" >
+                                                <th><input id="presenca4${c.id_matricula_disciplina}" type="checkbox" name="presenca4${c.id_matricula_disciplina}" value="presenca" ></th>
+                                            </c:if>
+                                            <c:if test="${c.presenca4 == 1}" >
+                                                <th><input id="presenca4${c.id_matricula_disciplina}" type="checkbox" name="presenca4${c.id_matricula_disciplina}" value="presenca" checked ></th>
+                                            </c:if>
+                                        </c:if>
+                                        <c:if test="${c.presenca1 == null && c.presenca2 == null && c.presenca3 == null && c.presenca4 == null}" >
+                                            <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" checked></th>
+                                            <th><input id="presenca2${c.id_matricula_disciplina}" type="checkbox" name="presenca2${c.id_matricula_disciplina}" value="presenca" checked></th>
+                                            <th><input id="presenca3${c.id_matricula_disciplina}" type="checkbox" name="presenca3${c.id_matricula_disciplina}" value="presenca" checked></th>
+                                            <th><input id="presenca4${c.id_matricula_disciplina}" type="checkbox" name="presenca4${c.id_matricula_disciplina}" value="presenca" checked></th>
+                                        </c:if>
                                     </c:if>
                                     <c:if test="${chamada.get(0).num_aulas == 2}" >
-                                        <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" checked></th>
-                                        <th><input id="presenca2${c.id_matricula_disciplina}" type="checkbox" name="presenca2${c.id_matricula_disciplina}" value="presenca" checked></th>
+                                        <c:if test="${c.presenca1 != null || c.presenca2 != null}" >
+                                            <c:if test="${c.presenca1 == 0}" >
+                                                <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" ></th>
+                                            </c:if>
+                                            <c:if test="${c.presenca1 == 1}" >
+                                                <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" checked ></th>
+                                            </c:if>
+                                            <c:if test="${c.presenca2 == 0}" >
+                                                <th><input id="presenca2${c.id_matricula_disciplina}" type="checkbox" name="presenca2${c.id_matricula_disciplina}" value="presenca" ></th>
+                                            </c:if>
+                                            <c:if test="${c.presenca2 == 1}" >
+                                                <th><input id="presenca2${c.id_matricula_disciplina}" type="checkbox" name="presenca2${c.id_matricula_disciplina}" value="presenca" checked ></th>
+                                            </c:if>
+                                        </c:if>
+                                        <c:if test="${c.presenca1 == null && c.presenca2 == null}" >
+                                            <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" checked></th>
+                                            <th><input id="presenca2${c.id_matricula_disciplina}" type="checkbox" name="presenca2${c.id_matricula_disciplina}" value="presenca" checked></th>
+                                        </c:if>
                                     </c:if>
                                 </tr>
                             </c:forEach>
@@ -128,7 +172,7 @@
                 </table>
             </div>
             <div>
-                <input class="btn" type="submit" name="botao" value="Alterar Chamada">
+                <input class="btn" type="submit" name="botao" value="Editar Chamada">
                 <input class="btn" type="submit" name="botao" value="Salvar Chamada">
             </div>
 

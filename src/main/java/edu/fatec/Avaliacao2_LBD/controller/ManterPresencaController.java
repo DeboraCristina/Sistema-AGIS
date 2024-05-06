@@ -33,6 +33,7 @@ public class ManterPresencaController {
     List<Curso> cursos= new ArrayList<>();
     List<Disciplina> disciplinas= new ArrayList<>();
     List<Presenca> chamada= new ArrayList<>();
+    Boolean editarChamada= false;
 
 
     @RequestMapping(name = "manter_chamada", value = "/manter_chamada", method = RequestMethod.GET)
@@ -53,6 +54,7 @@ public class ManterPresencaController {
                 presenca.setId_conteudo(Integer.parseInt(id_conteudo));
                 if (cmd.equalsIgnoreCase("Editar")){
                     chamada = presencaDAO.consultarChamada(presenca);
+                    editarChamada = true;
                 }
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -84,7 +86,6 @@ public class ManterPresencaController {
         String saida = "";
         Curso c = new Curso();
         Disciplina d = new Disciplina();
-        Presenca p = new Presenca();
         List<Presenca> presencas = new ArrayList<>();
 
 
@@ -101,12 +102,14 @@ public class ManterPresencaController {
 
             if (botao != null){
                 if (botao.equals("Adicionar Chamada")){
+                    editarChamada= false;
+                    chamada = null;
                     if (disciplina != null){
                         d.setCodigo(Integer.parseInt(disciplina));
                         if (!presencaDAO.verificarChamadaExistente(d)){
                             chamada = presencaDAO.gerarChamada(d);
                             if (chamada.isEmpty()){
-                                erro = "Dia errado para a crição da chamada";
+                                erro = "Dia errado para a criação da chamada";
                             }
                             else {
                                 saida = "Chamada Adicionada";
@@ -121,6 +124,8 @@ public class ManterPresencaController {
                     }
                 }
                 if (botao.equals("Buscar Chamadas")){
+                    chamada = null;
+                    editarChamada= false;
                     if (disciplina != null){
                         d.setCodigo(Integer.parseInt(disciplina));
                         presencas = presencaDAO.listPresenca(d);
@@ -135,71 +140,45 @@ public class ManterPresencaController {
                         erro = "Selecione uma disciplina";
                     }
                 }
-                if (botao.equals("Salvar Chamada")){
-                    if (chamada != null){
-                        if (!chamada.isEmpty()){
-                            for (Presenca presenca : chamada){
-                                int id_matricula= presenca.getId_matricula_disciplina();
-                                presenca1 = allRequestParams.get("presenca1" + id_matricula);
-                                presenca2 = allRequestParams.get("presenca2" + id_matricula);
-                                presenca3 = allRequestParams.get("presenca3" + id_matricula);
-                                presenca4 = allRequestParams.get("presenca4" + id_matricula);
-
-                                if (presenca.getNum_aulas() == 4){
-                                    if (presenca1 != null){
-                                        presenca.setPresenca1(1);
-                                    }
-                                    else {
-                                        presenca.setPresenca1(0);
-                                    }
-                                    if (presenca2 != null){
-                                        presenca.setPresenca2(1);
-                                    }
-                                    else {
-                                        presenca.setPresenca2(0);
-                                    }
-                                    if (presenca3 != null){
-                                        presenca.setPresenca3(1);
-                                    }
-                                    else {
-                                        presenca.setPresenca3(0);
-                                    }
-                                    if (presenca4 != null){
-                                        presenca.setPresenca4(1);
-                                    }
-                                    else {
-                                        presenca.setPresenca4(0);
-                                    }
-                                }
-                                else {
-                                    if (presenca1 != null){
-                                        presenca.setPresenca1(1);
-                                    }
-                                    else {
-                                        presenca.setPresenca1(0);
-                                    }
-                                    if (presenca2 != null){
-                                        presenca.setPresenca2(1);
-                                    }
-                                    else {
-                                        presenca.setPresenca2(0);
-                                    }
-                                }
+                if (botao.equals("Salvar Chamada")) {
+                    if (!editarChamada) {
+                        if (chamada != null) {
+                            if (!chamada.isEmpty()) {
+                                lerPresencas(allRequestParams);
+                                presencaDAO.salvarChamada(chamada);
+                                chamada = null;
+                                saida = "Chamada salva com sucesso";
+                            } else {
+                                erro = "Adicione uma chamada";
                             }
-                            presencaDAO.salvarChamada(chamada);
-                            chamada = null;
-                            saida = "Chamada salva com sucesso";
-                        }
-                        else {
-                            erro = "Adicione uma chamada";
+                        } else {
+                            erro = "A chamada esta vazia, adicione uma";
                         }
                     }
                     else {
-                        erro = "A chamada esta vazia";
+                        erro = "Para salvar esta chamada pressione o botão 'Editar Chamada'";
+                        lerPresencas(allRequestParams);
                     }
                 }
-                if (botao.equals("Alterar Chamada")){
-
+                if (botao.equals("Editar Chamada")) {
+                    if (editarChamada) {
+                        if (chamada != null){
+                            lerPresencas(allRequestParams);
+                            presencaDAO.editarChamada(chamada);
+                            saida = "Chamada editada com sucesso";
+                            editarChamada = false;
+                            chamada = null;
+                        }
+                    }
+                    else {
+                        if (chamada == null) {
+                            erro = "Busque uma chamada e depois selecione a opção editar";
+                        }
+                        else {
+                            erro = "Para salvar esta chamada pressione o botão 'Salvar Chamada'";
+                            lerPresencas(allRequestParams);
+                        }
+                    }
                 }
             }
 
@@ -217,6 +196,60 @@ public class ManterPresencaController {
         }
 
         return new ModelAndView("manter_chamada");
+    }
+
+    /**
+     * Atuliza a lista chamada com os checkbox checados na tela
+     * @param allRequestParams componentes da tela
+     */
+    private void lerPresencas(@RequestParam Map<String, String> allRequestParams) {
+        if (chamada != null){
+            String presenca1;
+            String presenca2;
+            String presenca3;
+            String presenca4;
+            for (Presenca presenca : chamada) {
+                int id_matricula = presenca.getId_matricula_disciplina();
+                presenca1 = allRequestParams.get("presenca1" + id_matricula);
+                presenca2 = allRequestParams.get("presenca2" + id_matricula);
+                presenca3 = allRequestParams.get("presenca3" + id_matricula);
+                presenca4 = allRequestParams.get("presenca4" + id_matricula);
+
+                if (presenca.getNum_aulas() == 4) {
+                    if (presenca1 != null) {
+                        presenca.setPresenca1(1);
+                    } else {
+                        presenca.setPresenca1(0);
+                    }
+                    if (presenca2 != null) {
+                        presenca.setPresenca2(1);
+                    } else {
+                        presenca.setPresenca2(0);
+                    }
+                    if (presenca3 != null) {
+                        presenca.setPresenca3(1);
+                    } else {
+                        presenca.setPresenca3(0);
+                    }
+                    if (presenca4 != null) {
+                        presenca.setPresenca4(1);
+                    } else {
+                        presenca.setPresenca4(0);
+                    }
+                } else {
+                    if (presenca1 != null) {
+                        presenca.setPresenca1(1);
+                    } else {
+                        presenca.setPresenca1(0);
+                    }
+                    if (presenca2 != null) {
+                        presenca.setPresenca2(1);
+                    } else {
+                        presenca.setPresenca2(0);
+                    }
+                }
+            }
+        }
     }
 
 }

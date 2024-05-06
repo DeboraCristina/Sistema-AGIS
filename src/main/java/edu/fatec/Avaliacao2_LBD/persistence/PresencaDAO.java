@@ -147,7 +147,8 @@ public class PresencaDAO implements ICRUD<Presenca> {
                        p.aula_4,
                        c.id,
                        h.horario_inicio,\s
-                       h.num_aulas
+                       h.num_aulas,
+                       p.id_matricula_disc
                 from presenca p, conteudo c, matricula_disciplina md, matricula m, aluno a, horario h
                 where c.id = p.id_conteudo and
                       p.id_matricula_disc = md.id and
@@ -172,11 +173,34 @@ public class PresencaDAO implements ICRUD<Presenca> {
             presenca1.setId_conteudo(rs.getInt(6));
             presenca1.setHorario_inicio(rs.getTime(7));
             presenca1.setNum_aulas(rs.getInt(8));
+            presenca1.setId_matricula_disciplina(rs.getInt(9));
 
             presencas.add(presenca1);
         }
 
         return presencas;
+    }
+
+    public void editarChamada(List<Presenca> presencas) throws SQLException, ClassNotFoundException {
+        Connection c= gdao.getConnection();
+
+        for (Presenca presenca : presencas) {
+            String sql= """
+                update presenca
+                set aula_1 = ?, aula_2 = ?, aula_3 = ?, aula_4 = ?
+                where id_matricula_disc = ? and
+                      id_conteudo = ?
+                """;
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, presenca.getPresenca1());
+            ps.setInt(2, presenca.getPresenca2());
+            ps.setInt(3, presenca.getPresenca3());
+            ps.setInt(4, presenca.getPresenca4());
+            ps.setInt(5, presenca.getId_matricula_disciplina());
+            ps.setInt(6, presenca.getId_conteudo());
+
+            ps.executeUpdate();
+        }
     }
 
     public List<Presenca> gerarChamada(Disciplina disciplina) throws SQLException, ClassNotFoundException {
@@ -186,7 +210,8 @@ public class PresencaDAO implements ICRUD<Presenca> {
         Connection c= gdao.getConnection();
         String sql= """
                 declare @dia_semana int
-                    set @dia_semana = 6   -- (SELECT DATEPART(dw, GETDATE()) AS DiaDaSemana)
+                    set @dia_semana = (SELECT DATEPART(dw, GETDATE()) AS DiaDaSemana)
+                
                 select a.nome,
                        h.num_aulas,
                        h.horario_inicio,
@@ -194,14 +219,14 @@ public class PresencaDAO implements ICRUD<Presenca> {
                        d.codigo
                 from matricula_disciplina md, disciplina d, aluno a, matricula m, horario h
                 where
+                    md.cod_disciplina = d.codigo and
                     md.ra_matricula = m.ra and
                     m.cpf_aluno = a.cpf and
                     md.estado = 'MATRICULADO' and
                     h.id = md.id_horario and
-                    m.matricula_ativa = 1 and
-                    d.codigo = ? and
-                    @dia_semana = md.dia_semana
-                group by a.nome, h.num_aulas, h.horario_inicio, md.id, d.codigo
+                    md.cod_disciplina = ? and
+                    md.dia_semana = @dia_semana
+                group by a.nome, h.num_aulas, md.id, h.horario_inicio, d.codigo
                 """;
         PreparedStatement ps = c.prepareStatement(sql);
         ps.setInt(1, disciplina.getCodigo());
