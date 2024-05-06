@@ -134,7 +134,7 @@ CREATE TABLE nota
 go
 CREATE TABLE presenca
 (
-    id INT NOT NULL,
+    id INT identity NOT NULL,
     id_matricula_disc INT NOT NULL,
     id_conteudo INT NOT NULL,
     aula_1 BIT NOT NULL,
@@ -1348,7 +1348,6 @@ values  (1, N'14504', N'202325763', 1001, 2023, 1, N'APROVADO', 2),
         (51, N'14504', N'202412147', 1090, 2024, 1, N'MATRICULADO', 5),
         (52, N'13002', N'202412147', 1091, 2024, 1, N'MATRICULADO', 5),
         (53, N'13002', N'202325763', 1008, 2024, 1, N'MATRICULADO', 7),
-        (54, N'13002', N'202325763', 1009, 2024, 1, N'MATRICULADO', 6),
         (55, N'13002', N'202325763', 1012, 2024, 1, N'MATRICULADO', 4),
         (56, N'13002', N'202325763', 1014, 2024, 1, N'MATRICULADO', 5),
         (57, N'14504', N'202325763', 1015, 2024, 1, N'MATRICULADO', 6),
@@ -1376,5 +1375,5 @@ values
     (2, 8.0, 8.0, 8.0),
     (3, 9.0, 9.0, 9.0);
 go
-insert into presenca (id, id_matricula_disc, id_conteudo, aula_1, aula_2, aula_3, aula_4, data)
-values (0, 1, 1, 1, 1, 1, 0, '2024/03/15');
+insert into presenca (id_matricula_disc, id_conteudo, aula_1, aula_2, aula_3, aula_4, data)
+values (1, 1, 1, 1, 1, 0, '2024/03/15');

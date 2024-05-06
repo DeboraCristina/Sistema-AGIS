@@ -16,7 +16,7 @@
     <main>
       <h1>Área do Professor</h1>
       <div>
-        <a class="btn" href="consultar_chamada">Chamadas</a>
+        <a class="btn" href="manter_chamada">Manter Chamada</a>
       </div>
     </main>
   </body>
