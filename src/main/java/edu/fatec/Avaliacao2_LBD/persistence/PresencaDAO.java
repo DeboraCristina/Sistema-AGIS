@@ -145,6 +145,7 @@ public class PresencaDAO implements ICRUD<Presenca> {
                       md.id = p.id_matricula_disc and
                       d.codigo = ?
                 group by p.data, p.id_conteudo, c.titulo
+                order by dataFomatada desc
                 """;
         PreparedStatement ps = c.prepareStatement(sql);
         ps.setInt(1, disciplina.getCodigo());
