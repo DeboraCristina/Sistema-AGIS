@@ -22,5 +22,5 @@ public class Presenca {
     private String data;
     private int num_aulas;
     private Time horario_inicio;
-    private int semestre;
+    private String conteudo_titulo;
 }

@@ -1,6 +1,7 @@
 package edu.fatec.Avaliacao2_LBD.controller;
 
 import edu.fatec.Avaliacao2_LBD.SpringServlet;
+import edu.fatec.Avaliacao2_LBD.model.Conteudo;
 import edu.fatec.Avaliacao2_LBD.model.Curso;
 import edu.fatec.Avaliacao2_LBD.model.Disciplina;
 import edu.fatec.Avaliacao2_LBD.model.Presenca;
@@ -26,12 +27,11 @@ public class ManterPresencaController {
     GenericDAO gdao;
     @Autowired
     PresencaDAO presencaDAO;
-    @Autowired
-    private SpringServlet springServlet;
 
 
     List<Curso> cursos= new ArrayList<>();
     List<Disciplina> disciplinas= new ArrayList<>();
+    List<Conteudo> conteudos= new ArrayList<>();
     List<Presenca> chamada= new ArrayList<>();
     Boolean editarChamada= false;
 
@@ -76,16 +76,14 @@ public class ManterPresencaController {
         String botao = allRequestParams.get("botao");
         String curso_codigo = allRequestParams.get("curso");
         String disciplina= allRequestParams.get("disciplina");
-        String presenca1;
-        String presenca2;
-        String presenca3;
-        String presenca4;
+        String conteudo= allRequestParams.get("conteudo");
 
 
         String erro = "";
         String saida = "";
         Curso c = new Curso();
         Disciplina d = new Disciplina();
+        Presenca p= new Presenca();
         List<Presenca> presencas = new ArrayList<>();
 
 
@@ -106,18 +104,30 @@ public class ManterPresencaController {
                     chamada = null;
                     if (disciplina != null){
                         d.setCodigo(Integer.parseInt(disciplina));
-                        if (!presencaDAO.verificarChamadaExistente(d)){
+
+                        conteudos = presencaDAO.listConteudo(d);
+                        if (!conteudos.isEmpty()){
                             chamada = presencaDAO.gerarChamada(d);
                             if (chamada.isEmpty()){
-                                erro = "Dia errado para a criação da chamada";
+                                erro = "Nenhum aluno encontrado";
                             }
                             else {
+
+                                for (Presenca presenca : chamada){
+                                    presenca.setPresenca1(2);
+                                    presenca.setPresenca2(2);
+                                    presenca.setPresenca3(2);
+                                    presenca.setPresenca4(2);
+                                }
+
                                 saida = "Chamada Adicionada";
                             }
                         }
                         else {
-                            erro = "Chamada já criada nesse dia!";
+                            erro = "Disciplina não contém Conteúdo criado";
                         }
+
+
                     }
                     else {
                         erro = "Selecione uma disciplina";
@@ -128,13 +138,16 @@ public class ManterPresencaController {
                     editarChamada= false;
                     if (disciplina != null){
                         d.setCodigo(Integer.parseInt(disciplina));
+                        //Carregar chamada
                         presencas = presencaDAO.listPresenca(d);
+
                         if (!presencas.isEmpty()){
-                            saida = "Chamadas Carregadas";
+                            saida = "Chamadas carregadas";
                         }
                         else {
-                            saida = "Disciplina não contém chamadas criadas";
+                            erro = "Disciplina não possui chamada criada";
                         }
+
                     }
                     else {
                         erro = "Selecione uma disciplina";
@@ -144,10 +157,29 @@ public class ManterPresencaController {
                     if (!editarChamada) {
                         if (chamada != null) {
                             if (!chamada.isEmpty()) {
-                                lerPresencas(allRequestParams);
-                                presencaDAO.salvarChamada(chamada);
-                                chamada = null;
-                                saida = "Chamada salva com sucesso";
+                                if (conteudo != null){
+                                    p = chamada.get(0);
+                                    p.setId_conteudo(Integer.parseInt(conteudo));
+                                    if (!presencaDAO.verificarChamadaExistente(p)) {
+                                        for (Presenca presenca : chamada) {
+                                            presenca.setId_conteudo(Integer.parseInt(conteudo));
+                                        }
+
+                                        lerPresencas(allRequestParams);
+                                        presencaDAO.salvarChamada(chamada);
+                                        chamada = null;
+                                        saida = "Chamada salva com sucesso";
+                                    }
+                                    else {
+                                        erro = "Já existe uma chamada criada nesse conteúdo";
+                                        chamada = null;
+                                    }
+                                }
+                                else {
+                                    lerPresencas(allRequestParams);
+                                    erro = "Selecione um conteúdo";
+                                }
+
                             } else {
                                 erro = "Adicione uma chamada";
                             }
@@ -186,6 +218,7 @@ public class ManterPresencaController {
         } catch (SQLException | ClassNotFoundException e) {
             erro = e.getMessage();
         }finally {
+            model.addAttribute("conteudos", conteudos);
             model.addAttribute("chamada", chamada);
             model.addAttribute("cursos", cursos);
             model.addAttribute("disciplinas", disciplinas);

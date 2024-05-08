@@ -1,5 +1,6 @@
 package edu.fatec.Avaliacao2_LBD.persistence;
 
+import edu.fatec.Avaliacao2_LBD.model.Conteudo;
 import edu.fatec.Avaliacao2_LBD.model.Curso;
 import edu.fatec.Avaliacao2_LBD.model.Disciplina;
 import edu.fatec.Avaliacao2_LBD.model.Presenca;
@@ -102,20 +103,48 @@ public class PresencaDAO implements ICRUD<Presenca> {
         return disciplinas;
     }
 
+    public List<Conteudo> listConteudo(Disciplina disciplina) throws SQLException, ClassNotFoundException {
+        List<Conteudo> conteudos = new ArrayList<>();
+
+        Connection c= gdao.getConnection();
+        String sql= """
+                select c.id,
+                       c.titulo
+                from conteudo c, disciplina d
+                where c.cod_disciplina = d.codigo and
+                      d.codigo = ?
+                """;
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setInt(1, disciplina.getCodigo());
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            Conteudo conteudo = new Conteudo();
+
+            conteudo.setId(rs.getInt(1));
+            conteudo.setTitulo(rs.getString(2));
+
+            conteudos.add(conteudo);
+        }
+
+        return conteudos;
+    }
+
     public List<Presenca> listPresenca(Disciplina disciplina) throws SQLException, ClassNotFoundException {
         List<Presenca> presencas = new ArrayList<>();
 
         Connection c= gdao.getConnection();
         String sql= """
                 select convert(varchar, p.data, 103) as dataFomatada,
-                       md.semestre_matricula,
+                       c.titulo,
                        p.id_conteudo
                 from disciplina d, presenca p, conteudo c, matricula_disciplina md
                 where c.id = p.id_conteudo and
                       d.codigo = c.cod_disciplina and
                       md.id = p.id_matricula_disc and
                       d.codigo = ?
-                group by p.data, md.semestre_matricula, p.id_conteudo
+                group by p.data, p.id_conteudo, c.titulo
                 """;
         PreparedStatement ps = c.prepareStatement(sql);
         ps.setInt(1, disciplina.getCodigo());
@@ -126,7 +155,7 @@ public class PresencaDAO implements ICRUD<Presenca> {
             Presenca presenca = new Presenca();
 
             presenca.setData(rs.getString("dataFomatada"));
-            presenca.setSemestre(rs.getInt("semestre_matricula"));
+            presenca.setConteudo_titulo(rs.getString("titulo"));
             presenca.setId_conteudo(rs.getInt("id_conteudo"));
 
             presencas.add(presenca);
@@ -205,13 +234,9 @@ public class PresencaDAO implements ICRUD<Presenca> {
 
     public List<Presenca> gerarChamada(Disciplina disciplina) throws SQLException, ClassNotFoundException {
         List<Presenca> presencas = new ArrayList<>();
-        // TESTANDO --------------------------------------------------------------------------------
-        // --------------------------------------------------------------------------------------
+
         Connection c= gdao.getConnection();
         String sql= """
-                declare @dia_semana int
-                    set @dia_semana = (SELECT DATEPART(dw, GETDATE()) AS DiaDaSemana)
-                
                 select a.nome,
                        h.num_aulas,
                        h.horario_inicio,
@@ -224,8 +249,7 @@ public class PresencaDAO implements ICRUD<Presenca> {
                     m.cpf_aluno = a.cpf and
                     md.estado = 'MATRICULADO' and
                     h.id = md.id_horario and
-                    md.cod_disciplina = ? and
-                    md.dia_semana = @dia_semana
+                    md.cod_disciplina = ?
                 group by a.nome, h.num_aulas, md.id, h.horario_inicio, d.codigo
                 """;
         PreparedStatement ps = c.prepareStatement(sql);
@@ -248,47 +272,41 @@ public class PresencaDAO implements ICRUD<Presenca> {
         return presencas;
     }
 
-    public Boolean verificarChamadaExistente(Disciplina disciplina) throws SQLException, ClassNotFoundException {
+    public Boolean verificarChamadaExistente(Presenca presenca) throws SQLException, ClassNotFoundException {
         Connection c= gdao.getConnection();
-        String sql= """
-                select p.id
-                from presenca p, conteudo c, disciplina d
-                where p.id_conteudo = c.id and
-                      c.cod_disciplina = d.codigo and
-                      p.data = cast(getdate() as date) and
-                      d.codigo = ?
+        String sql = """
+                select a.nome
+                from matricula_disciplina md, aluno a, matricula m, horario h,
+                     conteudo c, presenca p, disciplina d
+                where
+                    d.codigo = md.cod_disciplina and
+                    c.cod_disciplina = d.codigo and
+                    p.id_matricula_disc = md.id and
+                    md.ra_matricula = m.ra and
+                    m.cpf_aluno = a.cpf and
+                    h.id = md.id_horario and
+                    p.id_conteudo = c.id and
+                    m.matricula_ativa = 1 and
+                    md.cod_disciplina = ? and
+                    c.id = ?
+                group by a.nome
                 """;
         PreparedStatement ps = c.prepareStatement(sql);
-        ps.setInt(1, disciplina.getCodigo());
+        ps.setInt(1, presenca.getId_disciplina());
+        ps.setInt(2, presenca.getId_conteudo());
 
         ResultSet rs = ps.executeQuery();
 
-        if (rs.next()){
+        if (rs.next()) {
             return true;
         }
+
 
         return false;
     }
 
     public void salvarChamada(List<Presenca> chamada) throws SQLException, ClassNotFoundException {
-        int codigo_conteudo= 0;
         Connection c= gdao.getConnection();
-        String sqlConteudo = """
-                insert into conteudo (cod_disciplina, titulo)
-                values
-                    (?, ?)
-                """;
-        PreparedStatement psConteudo = c.prepareStatement(sqlConteudo, PreparedStatement.RETURN_GENERATED_KEYS);
-        psConteudo.setInt(1, chamada.get(0).getId_disciplina());
-        psConteudo.setString(2, "Titulo aleatorio");
-
-        psConteudo.executeUpdate();
-
-        ResultSet rs = psConteudo.getGeneratedKeys();
-
-        if (rs.next()) {
-            codigo_conteudo = rs.getInt(1);
-        }
 
         String sqlPresenca = """
                 insert into presenca (id_matricula_disc, id_conteudo, aula_1, aula_2, aula_3, aula_4, data)
@@ -299,7 +317,7 @@ public class PresencaDAO implements ICRUD<Presenca> {
 
         for (Presenca p : chamada) {
             psPresenca.setInt(1, p.getId_matricula_disciplina());
-            psPresenca.setInt(2, codigo_conteudo);
+            psPresenca.setInt(2, p.getId_conteudo());
             psPresenca.setInt(3, p.getPresenca1());
             psPresenca.setInt(4, p.getPresenca2());
             psPresenca.setInt(5, p.getPresenca3());

@@ -35,11 +35,14 @@
                 </c:if>
             </select>
         </div>
+            <div>
+                <input type="submit" class="btn" value="Buscar Chamadas" name="botao">
+            </div>
         <div class="tabela_container">
             <table>
                 <thead>
                     <th>Data</th>
-                    <th>Semestre</th>
+                    <th>Conteúdo</th>
                     <th>Ação</th>
                 </thead>
                 <tbody>
@@ -47,17 +50,13 @@
                         <c:forEach var="p" items="${presencas}">
                             <tr>
                                 <td><c:out value="${p.data}" /> </td>
-                                <td><c:out value="${p.semestre}"/> </td>
+                                <td><c:out value="${p.conteudo_titulo}"/> </td>
                                 <td><a href="${pageContext.request.contextPath}/manter_chamada?id=${p.id_conteudo}&acao=Editar">Editar</a></td>
                             </tr>
                         </c:forEach>
                     </c:if>
                 </tbody>
             </table>
-        </div>
-        <div>
-            <input type="submit" class="btn" value="Buscar Chamadas" name="botao">
-            <input type="submit" class="btn" value="Adicionar Chamada" name="botao">
         </div>
             <br />
             <br />
@@ -71,6 +70,12 @@
             </div>
             <br />
             <br />
+            <div>
+                <h1>Chamada</h1>
+            </div>
+            <div>
+                <input type="submit" class="btn" value="Adicionar Chamada" name="botao" width="300">
+            </div>
             <div>
                 <table>
                     <thead>
@@ -112,7 +117,7 @@
                                 <tr>
                                     <td><c:out value="${c.nome_aluno}" /></td>
                                     <c:if test="${chamada.get(0).num_aulas > 2}" >
-                                        <c:if test="${c.presenca1 != null || c.presenca2 != null || c.presenca3 != null || c.presenca4 != null}" >
+                                        <c:if test="${c.presenca1 != 2 || c.presenca2 != 2 || c.presenca3 != 2 || c.presenca4 != 2}" >
                                             <c:if test="${c.presenca1 == 0}" >
                                                 <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" ></th>
                                             </c:if>
@@ -138,7 +143,7 @@
                                                 <th><input id="presenca4${c.id_matricula_disciplina}" type="checkbox" name="presenca4${c.id_matricula_disciplina}" value="presenca" checked ></th>
                                             </c:if>
                                         </c:if>
-                                        <c:if test="${c.presenca1 == null && c.presenca2 == null && c.presenca3 == null && c.presenca4 == null}" >
+                                        <c:if test="${c.presenca1 == 2 && c.presenca2 == 2 && c.presenca3 == 2 && c.presenca4 == 2}" >
                                             <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" checked></th>
                                             <th><input id="presenca2${c.id_matricula_disciplina}" type="checkbox" name="presenca2${c.id_matricula_disciplina}" value="presenca" checked></th>
                                             <th><input id="presenca3${c.id_matricula_disciplina}" type="checkbox" name="presenca3${c.id_matricula_disciplina}" value="presenca" checked></th>
@@ -146,7 +151,7 @@
                                         </c:if>
                                     </c:if>
                                     <c:if test="${chamada.get(0).num_aulas == 2}" >
-                                        <c:if test="${c.presenca1 != null || c.presenca2 != null}" >
+                                        <c:if test="${c.presenca1 != 2 || c.presenca2 != 2}" >
                                             <c:if test="${c.presenca1 == 0}" >
                                                 <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" ></th>
                                             </c:if>
@@ -160,7 +165,7 @@
                                                 <th><input id="presenca2${c.id_matricula_disciplina}" type="checkbox" name="presenca2${c.id_matricula_disciplina}" value="presenca" checked ></th>
                                             </c:if>
                                         </c:if>
-                                        <c:if test="${c.presenca1 == null && c.presenca2 == null}" >
+                                        <c:if test="${c.presenca1 == 2 && c.presenca2 == 2}" >
                                             <th><input id="presenca1${c.id_matricula_disciplina}" type="checkbox" name="presenca1${c.id_matricula_disciplina}" value="presenca" checked></th>
                                             <th><input id="presenca2${c.id_matricula_disciplina}" type="checkbox" name="presenca2${c.id_matricula_disciplina}" value="presenca" checked></th>
                                         </c:if>
@@ -170,6 +175,17 @@
                         </c:if>
                     </tbody>
                 </table>
+            </div>
+            <div>
+                <label for="conteudo">Conteúdo:</label>
+                <select name="conteudo" id="conteudo" >
+                    <option value="" disabled selected hidden>Selecione um Conteúdo...</option>
+                    <c:if test="${not empty conteudos}">
+                        <c:forEach var="c" items="${conteudos}">
+                            <option value="${c.id}">${c.titulo}</option>
+                        </c:forEach>
+                    </c:if>
+                </select>
             </div>
             <div>
                 <input class="btn" type="submit" name="botao" value="Editar Chamada">
