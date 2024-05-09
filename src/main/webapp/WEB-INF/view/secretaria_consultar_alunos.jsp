@@ -51,9 +51,9 @@
                     		<td><c:out value="${m.curso.nome }"/></td>
                     		<td>
                     			<ul>
-                    				<li class="acao"><a href="">Disp. Disc.</a></li>
+                    				<li class="acao"><a href='dispensar_disciplinas?ra=<c:out value="${m.ra }"/>'>Disp. Disc.</a></li>
                     				<br>
-                    				<li class="acao"><a href="">Histórico</a></li>
+                    				<li class="acao"><a href='historico?ra=<c:out value="${m.ra }"/>'>Histórico</a></li>
                     			</ul>
                     		</td>
                     	</tr>

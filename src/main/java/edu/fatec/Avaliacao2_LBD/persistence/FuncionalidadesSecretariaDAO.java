@@ -1,9 +1,11 @@
 package edu.fatec.Avaliacao2_LBD.persistence;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +13,10 @@ import org.springframework.stereotype.Repository;
 
 import edu.fatec.Avaliacao2_LBD.model.Aluno;
 import edu.fatec.Avaliacao2_LBD.model.Curso;
+import edu.fatec.Avaliacao2_LBD.model.Disciplina;
 import edu.fatec.Avaliacao2_LBD.model.Matricula;
+import edu.fatec.Avaliacao2_LBD.model.MatriculaDisciplina;
+import edu.fatec.Avaliacao2_LBD.model.Professor;
 
 @Repository
 public class FuncionalidadesSecretariaDAO {
@@ -90,4 +95,90 @@ public class FuncionalidadesSecretariaDAO {
 
 		return matricula;
 	}
+
+	public List<MatriculaDisciplina> buscarDisciplinasParaHistorico(String ra)
+			throws SQLException, ClassNotFoundException {
+		Connection con = gdao.getConnection();
+		String query = "SELECT f.codigo AS codigo, f.nome_disc AS nome_disc, f.nome_professor AS nome_professor,  ";
+		query += "f.nota_final AS nota_final, f.faltas AS faltas FROM fn_buscar_disciplinas_pra_historico (?) AS f";
+
+		PreparedStatement ps = con.prepareStatement(query);
+		ps.setString(1, ra);
+
+		List<MatriculaDisciplina> mDisciplinas = new ArrayList<>();
+		ResultSet rs = ps.executeQuery();
+
+		while (rs.next()) {
+			Disciplina disciplina = new Disciplina();
+			Professor professor = new Professor();
+			MatriculaDisciplina mDisc = new MatriculaDisciplina();
+
+			professor.setNome(rs.getString("nome_professor"));
+			;
+
+			disciplina.setCodigo(rs.getInt("codigo"));
+			disciplina.setNome(rs.getString("nome_disc"));
+			disciplina.setProfessor(professor);
+
+			mDisc.setNota_final(rs.getString("nota_final"));
+			mDisc.setTotal_faltas(rs.getInt("faltas"));
+			mDisc.setDisciplina(disciplina);
+
+			mDisciplinas.add(mDisc);
+		}
+
+		return mDisciplinas;
+	}
+
+	public List<MatriculaDisciplina> buscarDisciplinasParaDispensa(String ra)
+			throws SQLException, ClassNotFoundException {
+		Connection con = gdao.getConnection();
+		String query = "SELECT f.codigo AS codigo, f.nome_disc AS nome_disc, f.nome_professor AS nome_professor, ";
+		query += "f.num_aulas AS num_aulas, f.situacao AS situacao FROM fn_buscar_disciplinas_pra_dispensa (?) AS f";
+		//
+
+		PreparedStatement ps = con.prepareStatement(query);
+		ps.setString(1, ra);
+
+		List<MatriculaDisciplina> mDisciplinas = new ArrayList<>();
+		ResultSet rs = ps.executeQuery();
+
+		while (rs.next()) {
+			Disciplina disciplina = new Disciplina();
+			Professor professor = new Professor();
+			MatriculaDisciplina mDisc = new MatriculaDisciplina();
+
+			professor.setNome(rs.getString("nome_professor"));
+			;
+
+			disciplina.setCodigo(rs.getInt("codigo"));
+			disciplina.setNome(rs.getString("nome_disc"));
+			disciplina.setHoras_semanais(rs.getInt("num_aulas"));
+			disciplina.setProfessor(professor);
+
+			mDisc.setSituacao(rs.getString("situacao"));
+			mDisc.setDisciplina(disciplina);
+
+			mDisciplinas.add(mDisc);
+		}
+
+		return mDisciplinas;
+	}
+
+	public String dispensarDisciplina(String ra, int codigo) throws SQLException, ClassNotFoundException 
+	{
+		Connection con = gdao.getConnection();
+        String query = "{ CALL sp_dispensar_disciplina(?, ?, ?) }";
+        CallableStatement cs = con.prepareCall(query);
+        cs.setString(1, ra);
+        cs.setInt(2, codigo);
+        cs.registerOutParameter(3, Types.VARCHAR);
+        cs.execute();
+        String saida = cs.getString(3);
+
+        cs.close();
+        con.close();
+		return saida;
+	}
+
 }

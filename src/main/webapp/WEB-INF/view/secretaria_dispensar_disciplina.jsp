@@ -22,9 +22,14 @@
         <form action="dispensar_disciplinas" method="post">
             <div>
                 <label for="buscar">RA</label>
-                <input type="number" name="buscar" id="buscar">
+                <input type="number" name="ra" id="ra" value='<c:out value="${matricula.ra }"/>'>
                 <input type="submit" name="botao" value="Buscar">
             </div>
+            <c:if test="${not empty erro}">
+            <div>
+            <h3 class="erro">ERRO: <c:out value="${erro }"/></h3>
+            </div>
+            </c:if>
             <div>
                 <table>
                     <thead>
@@ -37,12 +42,12 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>202411234</td>
-                            <td>placelholder</td>
-                            <td>Analise e Desenvolvimento de Sistemas</td>
-                            <td>2024/1</td>
-                            <td>90</td>
-                            <td>3</td>
+                            <td><c:out value="${matricula.ra }"/></td>
+                            <td><c:out value="${matricula.aluno.nome }"/></td>
+                            <td><c:out value="${matricula.curso.nome }"/></td>
+                            <td><c:out value="${matricula.ano_ingresso }"/>/<c:out value="${matricula.semestre_ingresso }"/></td>
+                            <td><c:out value="${matricula.pontuacao_vestibular }"/></td>
+                            <td><c:out value="${matricula.posicao_vestibular }"/></td>
                         </tr>
                     </tbody>
                 </table>
@@ -52,7 +57,7 @@
             <br>
 
             <!-- DISCIPLINAS -->
-            <h3>Disciplinas Aprovadas</h3>
+            <h3>Disciplinas</h3>
             <div class="tabela_container">
                 <table>
                     <thead>
@@ -64,38 +69,18 @@
                         <th>ação</th>
                     </thead>
                     <tbody>
-                        <!-- TODO: TABELA -->
-                        <tr>
-                            <td>1001</td>
-                            <td>Banco de Dados</td>
-                            <td>Colevati</td>
-                            <td>4</td>
-                            <td>MATRICULADO</td>
-                            <td>
-                                <p class="acao"><a href="">dispensar</a></p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1002</td>
-                            <td>Banco de Dados</td>
-                            <td>Colevati</td>
-                            <td>2</td>
-                            <td>DISPENSADO</td>
-                            <td>
-                                <p class="acao"><a href="">remover dispensa</a></p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1001</td>
-                            <td>Banco de Dados</td>
-                            <td>Colevati</td>
-                            <td>4</td>
-                            <td> </td>
-                            <td>
-                                <p class="acao"><a href="">dispensar</a></p>
-                            </td>
-                        </tr>
-                        <!-- TODO: TABELA -->
+                    	<c:forEach items="${matDisciplinas }" var="md">
+                    		<tr>
+                    			<td><c:out value="${md.disciplina.codigo }"/></td>
+                    			<td><c:out value="${md.disciplina.nome }"/></td>
+                    			<td><c:out value="${md.disciplina.professor.nome }"/></td>
+                    			<td><c:out value="${md.disciplina.horas_semanais }"/></td>
+                    			<td><c:out value="${md.situacao }"/></td>
+                    			<td>
+                                	<p class="acao"><a onclick="confirmacao('${md.disciplina.codigo }', '${matricula.ra }')">dispensar</a></p>
+                            	</td>
+                    		</tr>
+                    	</c:forEach>
                     </tbody>
                 </table>
             </div>
@@ -103,5 +88,16 @@
     </main>
 
 </body>
+
+<script>
+function confirmacao(codigo, ra) {
+  if (confirm("Tem certeza que deseja prosseguir? Essa ação não tem volta!!!")) {
+    window.location.href = "dispensar_disciplinas?acao=dispensar&ra="+ra+"&dis="+codigo;
+  } else {
+    return false;
+  }
+}
+</script>
+
 
 </html>

@@ -16,4 +16,6 @@ public class MatriculaDisciplina
     private Horario horario;
     private Disciplina disciplina;
     private String situacao;
+    private String nota_final;
+    private int total_faltas;
 }

@@ -5,17 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Disciplina
+public class Professor 
 {
-    private int codigo, horas_semanais;
-    private String nome;
-    private Professor professor;
-    private List<Conteudo> conteudos;
+	private int id;
+	private String nome;
+	
+	@Override
+	public String toString() {
+		return this.nome;
+	}
 }

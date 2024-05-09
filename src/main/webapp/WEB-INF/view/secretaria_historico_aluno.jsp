@@ -22,9 +22,14 @@
         <form action="historico" method="post">
             <div>
                 <label for="buscar">RA</label>
-                <input type="number" name="buscar" id="buscar">
+                <input type="number" name="ra" id="ra" value='<c:out value="${matricula.ra }"/>'>
                 <input type="submit" name="botao" value="Buscar">
             </div>
+            <c:if test="${not empty erro}">
+            <div>
+            <h3 class="erro">ERRO: <c:out value="${erro }"/></h3>
+            </div>
+            </c:if>
             <div>
                 <table>
                     <thead>
@@ -37,12 +42,12 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>202411234</td>
-                            <td>placelholder</td>
-                            <td>Analise e Desenvolvimento de Sistemas</td>
-                            <td>2024/1</td>
-                            <td>90</td>
-                            <td>3</td>
+                            <td><c:out value="${matricula.ra }"/></td>
+                            <td><c:out value="${matricula.aluno.nome }"/></td>
+                            <td><c:out value="${matricula.curso.nome }"/></td>
+                            <td><c:out value="${matricula.ano_ingresso }"/>/<c:out value="${matricula.semestre_ingresso }"/></td>
+                            <td><c:out value="${matricula.pontuacao_vestibular }"/></td>
+                            <td><c:out value="${matricula.posicao_vestibular }"/></td>
                         </tr>
                     </tbody>
                 </table>
@@ -63,13 +68,15 @@
                         <th>FALTAS</th>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>Banco de Dados</td>
-                            <td>Colevati</td>
-                            <td>10.0</td>
-                            <td>8</td>
-                        </tr>
+                    	<c:forEach items="${matDisciplinas }" var="md">
+                    		<tr>
+                    			<td><c:out value="${md.disciplina.codigo }"/></td>
+                    			<td><c:out value="${md.disciplina.nome }"/></td>
+                    			<td><c:out value="${md.disciplina.professor.nome }"/></td>
+                    			<td><c:out value="${md.nota_final }"/></td>
+                    			<td><c:out value="${md.total_faltas }"/></td>
+                    		</tr>
+                    	</c:forEach>
                     </tbody>
                 </table>
             </div>
