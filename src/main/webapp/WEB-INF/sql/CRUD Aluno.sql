@@ -13,9 +13,9 @@ DROP DATABASE Avaliacao_2_Lab_BD
 /*
 DROP TABLE presenca; GO
 DROP TABLE nota; GO
+DROP TABLE matricula_disciplina; GO
 DROP TABLE conteudo; GO
 DROP TABLE curso_disciplina; GO
-DROP TABLE matricula_disciplina; GO
 DROP TABLE disciplina; GO
 DROP TABLE professor; GO
 DROP TABLE horario; GO
@@ -28,13 +28,13 @@ DROP TABLE curso;
 CREATE TABLE aluno
 (
     cpf CHAR(11) NOT NULL,
-    nome VARCHAR(50) NOT NULL,
-    nome_social VARCHAR(50),
+    nome VARCHAR(100) NOT NULL,
+    nome_social VARCHAR(100),
     data_nasc DATE NOT NULL,
-    email_pessoal VARCHAR(50) NOT NULL,
-    email_corporativo VARCHAR(50) NOT NULL,
+    email_pessoal VARCHAR(100) NOT NULL,
+    email_corporativo VARCHAR(100) NOT NULL,
     data_conclusao_seg_grau DATE NOT NULL,
-    instituicao_seg_grau VARCHAR(50) NOT NULL,
+    instituicao_seg_grau VARCHAR(100) NOT NULL,
 
     PRIMARY KEY(cpf)
 )
@@ -51,7 +51,7 @@ CREATE TABLE telefone
 CREATE TABLE professor
 (
     id      INT NOT NULL,
-    nome    VARCHAR(50) NOT NULL,
+    nome    VARCHAR(100) NOT NULL,
 
     PRIMARY KEY (id)
 )
@@ -59,7 +59,7 @@ CREATE TABLE professor
 CREATE TABLE disciplina
 (
     codigo INT NOT NULL,
-    nome VARCHAR(40) NOT NULL UNIQUE,
+    nome VARCHAR(100) NOT NULL,
     horas_semanais INT NOT NULL,
     periodo_recomendado INT NOT NULL,
     id_professor    INT NOT NULL,
@@ -86,7 +86,7 @@ CREATE TABLE conteudo
 (
     id INT IDENTITY NOT NULL,
     cod_disciplina  INT         NOT NULL,
-    titulo       VARCHAR(50) NOT NULL,
+    titulo       VARCHAR(100) NOT NULL,
 
     PRIMARY KEY(id),
     FOREIGN KEY(cod_disciplina) REFERENCES disciplina
@@ -155,9 +155,10 @@ CREATE TABLE matricula_disciplina
 CREATE TABLE nota
 (
     id_matricula_disc INT NOT NULL,
-    nota_1 DECIMAL(3, 2) NOT NULL,
-    nota_2 DECIMAL(3, 2) NOT NULL,
-    nota_3 DECIMAL(3, 2) NOT NULL,
+    nota_1 DECIMAL(4, 2) NOT NULL,
+    nota_2 DECIMAL(4, 2) NOT NULL,
+    nota_3 DECIMAL(4, 2) NOT NULL,
+    data DATE,
 
     PRIMARY KEY (id_matricula_disc),
     FOREIGN KEY (id_matricula_disc) REFERENCES matricula_disciplina
@@ -175,6 +176,6 @@ CREATE TABLE presenca
     data DATE,
 
     PRIMARY KEY (id),
-    FOREIGN KEY (id_matricula_disc) REFERENCES matricula_disciplina
+    FOREIGN KEY (id_matricula_disc) REFERENCES matricula_disciplina,
     FOREIGN KEY (id_conteudo) REFERENCES conteudo
 )

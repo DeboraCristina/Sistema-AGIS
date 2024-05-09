@@ -4,6 +4,10 @@
  * USE Avaliacao_1_Lab_BD
 */
 
+USE Avaliacao_2_Lab_BD
+
+GO
+
 /*
     DROP PROCEDURE sp_iud_matricula_disciplina
 */
@@ -50,9 +54,33 @@ BEGIN
                             (@id_horario, @ra_matricula, @cod_disciplina, @ano_matricula,
                              @semestre_matricula, 'matriculado', @dia)
                         SET @saida = 'Matricula feita com sucesso'
+
+                        ----
+                        DECLARE @id_matri_disc_init INT, @id_matri_disc_fim INT
+                        SELECT TOP(1) @id_matri_disc_init=md.id
+                        FROM matricula_disciplina AS md LEFT JOIN nota AS n ON n.id_matricula_disc = md.id
+                        WHERE n.id_matricula_disc IS NULL
+
+                        SELECT TOP(1) @id_matri_disc_fim=md.id
+                        FROM matricula_disciplina AS md LEFT JOIN nota AS n ON n.id_matricula_disc = md.id
+                        WHERE n.id_matricula_disc IS NULL
+                        ORDER BY md.id DESC
+
+                        WHILE (@id_matri_disc_init <= @id_matri_disc_fim)
+                        BEGIN
+                            INSERT INTO nota VALUES (@id_matri_disc_init, 0.0, 0.0, 0.0, null)
+
+                            -------------------------------------------------
+                            SET @id_matri_disc_init = @id_matri_disc_init + 1
+                        END
+                        ---
+
                     END TRY
                     BEGIN CATCH
-                        RAISERROR ('Erro ao matricular nova disciplina', 16, 1)
+                        DECLARE @erro VARCHAR(100)
+                        SET @erro = ERROR_MESSAGE()
+                        SET @erro = 'Erro ao matricular nova disciplina: ' + @erro
+                        RAISERROR (@erro, 16, 1)
                     END CATCH
                 END
             END

@@ -90,7 +90,16 @@ BEGIN
                             @posicao_vestibular, @ano_ingresso, @semestre_ingresso,
                             @ano_limite_graduacao, @semestre_limite_graduacao, 1)
 
+                            DECLARE @s VARCHAR(100)
+                            EXEC sp_matricular_displinas_de_semestre @novo_ra,  OUTPUT
+
                             SET @saida = 'Matricula cadastrada com sucesso'
+
+                            IF (@s NOT LIKE 'MATRICULAS FEITAS COM SUCESSO')
+                            BEGIN
+                                SET @saida = 'Matricula cadastrada com sucesso! MAS: houve problemas em matricular disciplinas automaticamente'
+                            END
+
                         END TRY
                         BEGIN CATCH
                             RAISERROR ('Erro ao cadastrar matricla', 16, 1)
