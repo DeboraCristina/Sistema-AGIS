@@ -15,10 +15,18 @@
     </div>
     <main>
       <h1>Área da Secretaria</h1>
-      <p>Ainda não está 100% implementada.</p>
       <br />
       <div>
         <a class="btn" href="manter_aluno">Manter Aluno</a>
+      </div>
+      <div>
+        <a class="btn" href="consultar_alunos">Consultar Alunos</a>
+      </div>
+      <div>
+        <a class="btn" href="historico">Histórico Aluno</a>
+      </div>
+      <div>
+        <a class="btn" href="dispensar_disciplinas">Dispensar Disciplinas Aluno</a>
       </div>
     </main>
   </body>
