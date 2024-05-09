@@ -6,7 +6,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Área do Professor</title>
+    <title>Area do Professor</title>
     <link rel="stylesheet" type="text/css" href='<c:url value = "./resources/css/style.css"/>' />
   </head>
   <body>
@@ -15,8 +15,9 @@
     </div>
     <main>
       <h1>Área do Professor</h1>
-      <p>ainda não implementada</p>
-      <!-- TODO: Área da Secretaria -->
+      <div>
+        <a class="btn" href="manter_chamada">Manter Chamada</a>
+      </div>
     </main>
   </body>
 </html>
