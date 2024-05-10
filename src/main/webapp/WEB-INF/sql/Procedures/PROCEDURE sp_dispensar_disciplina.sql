@@ -6,17 +6,42 @@ GO
     DROP PROCEDURE sp_dispensar_disciplina
 */
 
-CREATE PROCEDURE sp_dispensar_disciplina(@ra CHAR(9), @cod_disc INT, @saida BIT OUTPUT)
+CREATE PROCEDURE sp_dispensar_disciplina(@id_matricula_disciplina INT, @saida VARCHAR(100) OUTPUT)
 AS
 BEGIN
-    DECLARE @s VARCHAR(100)
-    SET @saida = 1
-    --------------------
+    IF (@id_matricula_disciplina IS NOT NULL)
+    BEGIN
+        DECLARE @s VARCHAR(100), @ra CHAR(9), @cod_disc INT, @erro VARCHAR(100)
+        SET @saida = 'Disciplina dispensada com sucesso!'
+        --------------------
 
-    EXEC sp_iud_matricula_disciplina 'I', NULL, '00000',
-    @ra, @cod_disc, 2, @s OUTPUT
+        SELECT @ra=ra_matricula, @cod_disc=cod_disciplina FROM matricula_disciplina WHERE id=@id_matricula_disciplina
 
-    UPDATE matricula_disciplina SET estado = 'dispensado'
-    WHERE id_horario = '00000' AND cod_disciplina = @cod_disc
+        IF (@id_matricula_disciplina = 0)
+        BEGIN
+            BEGIN TRY
+                EXEC sp_iud_matricula_disciplina 'I', NULL, '00000',
+                @ra, @cod_disc, 2, @s OUTPUT
+            END TRY
+            BEGIN CATCH
+                SET @erro = ERROR_MESSAGE()
+                RAISERROR (@erro, 16, 1)
+            END CATCH
+        END
 
+        BEGIN TRY
+            UPDATE matricula_disciplina SET estado = 'dispensado'
+            WHERE id = @id_matricula_disciplina
+        END TRY
+        BEGIN CATCH
+            SET @erro = 'Erro ao dispensar disciplina "'+ CAST(@cod_disc AS VARCHAR(100)) +'": ' + ERROR_MESSAGE()
+            RAISERROR (@erro, 16, 1)
+        END CATCH
+
+
+    END
+    ELSE
+    BEGIN
+        RAISERROR ('ID matricula NULO!!', 16, 1)
+    END
 END
