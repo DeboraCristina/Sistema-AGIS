@@ -19,8 +19,9 @@ RETURNS @table TABLE
 BEGIN
     INSERT INTO @table
         SELECT m.ra,
-        CASE WHEN a.nome_social IS NULL
-        THEN UPPER(a.nome)
+        CASE
+        WHEN a.nome_social IS NULL THEN UPPER(a.nome)
+        WHEN a.nome_social = '' THEN UPPER(a.nome)
         ELSE UPPER(a.nome_social)
         END AS nome_aluno,
         c.nome AS nome_curso,

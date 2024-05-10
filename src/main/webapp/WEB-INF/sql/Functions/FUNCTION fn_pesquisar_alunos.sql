@@ -25,7 +25,11 @@ BEGIN
     BEGIN
         INSERT INTO @table
             SELECT a.cpf, m.ra,
-            CASE WHEN a.nome_social IS NULL THEN UPPER(a.nome) ELSE UPPER(a.nome_social) END AS nome_aluno,
+            CASE
+            WHEN a.nome_social IS NULL THEN UPPER(a.nome)
+            WHEN a.nome_social = '' THEN UPPER(a.nome)
+            ELSE UPPER(a.nome_social)
+            END AS nome_aluno,
             c.nome AS nome_curso,
             CAST(m.ano_ingresso AS VARCHAR(50)) + '/' + CAST(m.semestre_ingresso AS VARCHAR(50)) AS data,
             m.pontuacao_vestibular, m.posicao_vestibular
@@ -37,7 +41,11 @@ BEGIN
     BEGIN
         INSERT INTO @table
             SELECT a.cpf, m.ra,
-            CASE WHEN a.nome_social IS NULL THEN UPPER(a.nome) ELSE UPPER(a.nome_social) END AS nome_aluno,
+            CASE
+            WHEN a.nome_social IS NULL THEN UPPER(a.nome)
+            WHEN a.nome_social = '' THEN UPPER(a.nome)
+            ELSE UPPER(a.nome_social)
+            END AS nome_aluno,
             c.nome AS nome_curso,
             CAST(m.ano_ingresso AS VARCHAR(50)) + '/' + CAST(m.semestre_ingresso AS VARCHAR(50)) AS data,
             m.pontuacao_vestibular, m.posicao_vestibular
@@ -49,7 +57,11 @@ BEGIN
     BEGIN
         INSERT INTO @table
             SELECT a.cpf, m.ra,
-            CASE WHEN a.nome_social IS NULL THEN UPPER(a.nome) ELSE UPPER(a.nome_social) END AS nome_aluno,
+            CASE
+            WHEN a.nome_social IS NULL THEN UPPER(a.nome)
+            WHEN a.nome_social = '' THEN UPPER(a.nome)
+            ELSE UPPER(a.nome_social)
+            END AS nome_aluno,
             c.nome AS nome_curso,
             CAST(m.ano_ingresso AS VARCHAR(50)) + '/' + CAST(m.semestre_ingresso AS VARCHAR(50)) AS data,
             m.pontuacao_vestibular, m.posicao_vestibular
@@ -62,7 +74,11 @@ BEGIN
     BEGIN
         INSERT INTO @table
             SELECT a.cpf, m.ra,
-            CASE WHEN a.nome_social IS NULL THEN UPPER(a.nome) ELSE UPPER(a.nome_social) END AS nome_aluno,
+            CASE
+            WHEN a.nome_social IS NULL THEN UPPER(a.nome)
+            WHEN a.nome_social = '' THEN UPPER(a.nome)
+            ELSE UPPER(a.nome_social)
+            END AS nome_aluno,
             c.nome AS nome_curso,
             CAST(m.ano_ingresso AS VARCHAR(50)) + '/' + CAST(m.semestre_ingresso AS VARCHAR(50)) AS data,
             m.pontuacao_vestibular, m.posicao_vestibular
@@ -74,7 +90,11 @@ BEGIN
     BEGIN
         INSERT INTO @table
             SELECT a.cpf, m.ra,
-            CASE WHEN a.nome_social IS NULL THEN UPPER(a.nome) ELSE UPPER(a.nome_social) END AS nome_aluno,
+            CASE
+            WHEN a.nome_social IS NULL THEN UPPER(a.nome)
+            WHEN a.nome_social = '' THEN UPPER(a.nome)
+            ELSE UPPER(a.nome_social)
+            END AS nome_aluno,
             c.nome AS nome_curso,
             CAST(m.ano_ingresso AS VARCHAR(50)) + '/' + CAST(m.semestre_ingresso AS VARCHAR(50)) AS data,
             m.pontuacao_vestibular, m.posicao_vestibular
