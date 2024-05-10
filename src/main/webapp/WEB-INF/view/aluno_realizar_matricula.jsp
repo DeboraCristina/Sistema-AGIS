@@ -146,9 +146,9 @@
       var id_matricula = hiperlink.getAttribute('data-id')
       var select = document.getElementById('dia_semana')
       var dia = select.value
-      var url = "${pageContext.request.contextPath}/realizar_matricula?ra="+ra+"&cd="+cod_disc+"&n="+nome_disc+"&d="+dia+"&acao="+acao
+      var url = "realizar_matricula?ra="+ra+"&cd="+cod_disc+"&n="+nome_disc+"&d="+dia+"&acao="+acao
       if (id_matricula !== 'null')
-        url = "${pageContext.request.contextPath}/realizar_matricula?ra="+ra+"&cd="+cod_disc+"&n="+nome_disc+"&d="+dia+"&id="+id_matricula+"&acao="+acao
+        url = "realizar_matricula?ra="+ra+"&cd="+cod_disc+"&n="+nome_disc+"&d="+dia+"&id="+id_matricula+"&acao="+acao
       window.location.href = url
     }
   </script>
