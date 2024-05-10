@@ -26,7 +26,7 @@ import edu.fatec.Avaliacao2_LBD.persistence.TelefoneDAO;
 import edu.fatec.Avaliacao2_LBD.utils.MatriculaAlunoBuilder;
 
 @Controller
-public class ManterAlunoController
+public class ManterAlunoController 
 {
 	@Autowired
 	GenericDAO gdao;
@@ -66,8 +66,7 @@ public class ManterAlunoController
     }
 
     @RequestMapping(name = "manter_aluno", value = "/manter_aluno", method = RequestMethod.POST)
-    public ModelAndView doPost(@RequestParam Map<String, String> allRequestParam, ModelMap model,
-    		@RequestParam("telefones") String[] jsp_telefones)
+    public ModelAndView doPost(@RequestParam Map<String, String> allRequestParam, @RequestParam("telefones") String[] jsp_telefones, ModelMap model)
     {
     	String cmd = allRequestParam.get("botao") == null ? "" : allRequestParam.get("botao");
         String cpf = allRequestParam.get("cpf") == null ? "" : allRequestParam.get("cpf");
@@ -92,7 +91,7 @@ public class ManterAlunoController
 
         MatriculaAlunoBuilder builder = new MatriculaAlunoBuilder();
         Matricula matricula = new Matricula();
-        List<Telefone> telefones = getTelefones(jsp_telefones); //TODO: atenção
+        List<Telefone> telefones = getTelefones(jsp_telefones);
         List<Curso> cursos = new ArrayList<>();
         Aluno aluno = new Aluno();
         
@@ -194,7 +193,7 @@ public class ManterAlunoController
             model.addAttribute("saida", saida);
             model.addAttribute("erro", erro);
         }
-        
+    	
         return new ModelAndView("secretaria_manter_aluno");
     }
     
@@ -204,8 +203,11 @@ public class ManterAlunoController
         {
             for (String telefone_str : telefones_str)
             {
-                Telefone telefone = new Telefone(telefone_str);
-                telefones.add(telefone);
+            	if (telefone_str != "")
+            	{
+	                Telefone telefone = new Telefone(telefone_str);
+	                telefones.add(telefone);
+            	}
             }
         }
         return telefones;

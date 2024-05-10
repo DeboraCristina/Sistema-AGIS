@@ -30,6 +30,11 @@
             <h3 class="erro">ERRO: <c:out value="${erro }"/></h3>
             </div>
             </c:if>
+            <c:if test="${not empty saida}">
+            <div>
+            <h3 class="saida">ERRO: <c:out value="${saida }"/></h3>
+            </div>
+            </c:if>
             <div>
                 <table>
                     <thead>

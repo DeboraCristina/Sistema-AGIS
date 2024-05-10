@@ -105,6 +105,7 @@
             </tbody>
           </table>
           <%-- Input para enviar a lista pro serv --%>
+          <input id="i_0" type="hidden" name="telefones" value=''>
           <c:if test="${not empty telefones}">
             <c:forEach items="${telefones}" var="tel">
               <input id="i_${tel.numero}" type="hidden" name="telefones" value='<c:out value="${tel.numero}"/>'>

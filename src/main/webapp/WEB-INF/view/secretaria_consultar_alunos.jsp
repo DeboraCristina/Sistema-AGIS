@@ -31,6 +31,16 @@
                 <input type="number" name="valor_pesquisa" id="valor_pesquisa">
                 <input type="submit" name="botao" value="Buscar">
             </div>
+            <c:if test="${not empty erro}">
+            <div>
+            <h3 class="erro">ERRO: <c:out value="${erro }"/></h3>
+            </div>
+            </c:if>
+            <c:if test="${not empty saida}">
+            <div>
+            <h3 class="saida">ERRO: <c:out value="${saida }"/></h3>
+            </div>
+            </c:if>
             <div class="tabela_consulta">
                 <table>
                     <thead>
