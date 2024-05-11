@@ -38,7 +38,7 @@
             </c:if>
             <c:if test="${not empty saida}">
             <div>
-            <h3 class="saida">ERRO: <c:out value="${saida }"/></h3>
+            <h3 class="saida"><c:out value="${saida }"/></h3>
             </div>
             </c:if>
             <div class="tabela_consulta">
