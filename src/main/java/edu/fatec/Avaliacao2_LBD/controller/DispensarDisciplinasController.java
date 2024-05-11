@@ -30,8 +30,9 @@ public class DispensarDisciplinasController
     public ModelAndView doGet(@RequestParam Map<String, String> allRequestParam, ModelMap model)
     {
 		String acao = allRequestParam.get("acao") == null ? "" : allRequestParam.get("acao");
-    	String codDis = allRequestParam.get("dis") == null ? "" : allRequestParam.get("dis");
+    	String str_id = allRequestParam.get("id") == null ? "" : allRequestParam.get("id");
     	String ra = allRequestParam.get("ra") == null ? "" : allRequestParam.get("ra");
+    	String str_cod = allRequestParam.get("cod") == null ? "" : allRequestParam.get("cod");
     	
     	String saida = "";
 		String erro = "";
@@ -41,9 +42,12 @@ public class DispensarDisciplinasController
 		
 		try 
 		{	
-			if (acao.equalsIgnoreCase("dispensar") && !codDis.equalsIgnoreCase("") && !ra.equalsIgnoreCase(""))
+			if (acao.equalsIgnoreCase("dispensar") && !str_id.equalsIgnoreCase("") 
+					&& !str_cod.equalsIgnoreCase("") && !ra.equalsIgnoreCase(""))
 			{
-				saida = dispensarDisciplina(ra, Integer.parseInt(codDis));
+				int id = Integer.parseInt(str_id);
+				int codigo = Integer.parseInt(str_cod);
+				saida = dispensarDisciplina(ra, id, codigo);
 			}
 			
 			if (!ra.equalsIgnoreCase(""))
@@ -102,8 +106,8 @@ public class DispensarDisciplinasController
         return new ModelAndView("secretaria_dispensar_disciplina");
     }
 
-    private String dispensarDisciplina(String ra, int codDis) throws SQLException, ClassNotFoundException {
-		return fdao.dispensarDisciplina(ra, codDis);
+    private String dispensarDisciplina(String ra, int id, int cod) throws SQLException, ClassNotFoundException {
+		return fdao.dispensarDisciplina(ra, id, cod);
 	}
     
 	private List<MatriculaDisciplina> buscarDisciplinas(String ra) throws SQLException, ClassNotFoundException {

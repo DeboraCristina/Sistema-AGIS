@@ -133,9 +133,8 @@ public class FuncionalidadesSecretariaDAO {
 	public List<MatriculaDisciplina> buscarDisciplinasParaDispensa(String ra)
 			throws SQLException, ClassNotFoundException {
 		Connection con = gdao.getConnection();
-		String query = "SELECT f.codigo AS codigo, f.nome_disc AS nome_disc, f.nome_professor AS nome_professor, ";
-		query += "f.num_aulas AS num_aulas, f.situacao AS situacao FROM fn_buscar_disciplinas_pra_dispensa (?) AS f";
-		//
+		String query = "SELECT f.id_matricula AS id_matricula, f.codigo AS codigo, f.nome_disc AS nome_disc, f.nome_professor AS nome_professor, ";
+		query += "f.num_aulas AS num_aulas, f.situacao AS situacao FROM fn_buscar_disciplinas_pra_dispensa (?) AS f";  
 
 		PreparedStatement ps = con.prepareStatement(query);
 		ps.setString(1, ra);
@@ -149,13 +148,13 @@ public class FuncionalidadesSecretariaDAO {
 			MatriculaDisciplina mDisc = new MatriculaDisciplina();
 
 			professor.setNome(rs.getString("nome_professor"));
-			;
 
 			disciplina.setCodigo(rs.getInt("codigo"));
 			disciplina.setNome(rs.getString("nome_disc"));
 			disciplina.setHoras_semanais(rs.getInt("num_aulas"));
 			disciplina.setProfessor(professor);
 
+			mDisc.setId(rs.getInt("id_matricula"));
 			mDisc.setSituacao(rs.getString("situacao"));
 			mDisc.setDisciplina(disciplina);
 
@@ -165,16 +164,17 @@ public class FuncionalidadesSecretariaDAO {
 		return mDisciplinas;
 	}
 
-	public String dispensarDisciplina(String ra, int codigo) throws SQLException, ClassNotFoundException 
+	public String dispensarDisciplina(String ra, int id, int codigo) throws SQLException, ClassNotFoundException 
 	{
 		Connection con = gdao.getConnection();
-        String query = "{ CALL sp_dispensar_disciplina(?, ?, ?) }";
+        String query = "{ CALL sp_dispensar_disciplina(?, ?, ?, ?) }";
         CallableStatement cs = con.prepareCall(query);
         cs.setString(1, ra);
-        cs.setInt(2, codigo);
-        cs.registerOutParameter(3, Types.VARCHAR);
+        cs.setInt(2, id);
+        cs.setInt(3, codigo);
+        cs.registerOutParameter(4, Types.VARCHAR);
         cs.execute();
-        String saida = cs.getString(3);
+        String saida = cs.getString(4);
 
         cs.close();
         con.close();
