@@ -1,15 +1,9 @@
-# Avaliação 2 Lab BD
-
-**DataBase:** Avaliacao_2_Lab_BD
-**Dados em:** WEB-INF/doc/Dados Avaliação LBD.xlsx
-
-## BUG's
-- doPost do Manter aluno não funciona
+# Sistema AGIS com Spring
 
 ## Funcionalidades
-- [ ] Manter aluno
-	- [ ] Matricular semestre automaticamente
-- [x] Realizar matricula
-- [x] Consultar matricula
-- [ ] Chamada
-- [ ] Histórico
+- [x] CRUD aluno
+	- [x] Ao matricular um novo aluno ele é matriculado automaticamente nas disciplinas de primeiro semestre.
+- [x] Consultar alunos matriculados
+- [x] Realizar Chamada
+- [x] Consultar Histórico de alunos
+- [x] Alunos podem ser dispensados de disciplinas
