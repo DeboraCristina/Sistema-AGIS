@@ -21,7 +21,7 @@
         <br>
         <form action="dispensar_disciplinas" method="post">
             <div>
-                <label for="buscar">RA</label>
+                <label for="ra">RA</label>
                 <input type="number" name="ra" id="ra" value='<c:out value="${matricula.ra }"/>'>
                 <input type="submit" name="botao" value="Buscar">
             </div>
