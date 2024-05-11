@@ -32,7 +32,7 @@
             </c:if>
             <c:if test="${not empty saida}">
             <div>
-            <h3 class="saida">ERRO: <c:out value="${saida }"/></h3>
+            <h3 class="saida"><c:out value="${saida }"/></h3>
             </div>
             </c:if>
             <div>
@@ -75,16 +75,16 @@
                     </thead>
                     <tbody>
                     	<c:forEach items="${matDisciplinas }" var="md">
-                    		<tr>
-                    			<td><c:out value="${md.disciplina.codigo }"/></td>
-                    			<td><c:out value="${md.disciplina.nome }"/></td>
-                    			<td><c:out value="${md.disciplina.professor.nome }"/></td>
-                    			<td><c:out value="${md.disciplina.horas_semanais }"/></td>
-                    			<td><c:out value="${md.situacao }"/></td>
-                    			<td>
-                                	<p class="acao"><a onclick="confirmacao('${md.disciplina.codigo }', '${matricula.ra }')">dispensar</a></p>
-                            	</td>
-                    		</tr>
+                   		<tr>
+                   			<td><c:out value="${md.disciplina.codigo }"/></td>
+                   			<td><c:out value="${md.disciplina.nome }"/></td>
+                   			<td><c:out value="${md.disciplina.professor.nome }"/></td>
+                   			<td><c:out value="${md.disciplina.horas_semanais }"/></td>
+                   			<td><c:out value="${md.situacao }"/></td>
+                    		<td>
+                               <p class="acao"><a onclick="confirmacao('${matricula.ra }', '${md.id }', '${md.disciplina.codigo }')">dispensar</a></p>
+                           	</td>
+                    	</tr>
                     	</c:forEach>
                     </tbody>
                 </table>
@@ -95,9 +95,9 @@
 </body>
 
 <script>
-function confirmacao(codigo, ra) {
-  if (confirm("Tem certeza que deseja prosseguir? Essa ação não tem volta!!!")) {
-    window.location.href = "dispensar_disciplinas?acao=dispensar&ra="+ra+"&dis="+codigo;
+function confirmacao(ra, id, cod) {
+  if (confirm("Tem certeza que deseja prosseguir? Essa ação não tem volta!!! ")) {
+    window.location.href = "dispensar_disciplinas?acao=dispensar&ra="+ra+"&id="+id+"&cod="+cod;
   } else {
     return false;
   }
